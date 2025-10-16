@@ -34,13 +34,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Iak\\Key\\": "src/",
+            "Iak\\Key\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Iak\\Key\\Tests\\": "tests/",
-            "Workbench\\App\\": "workbench/app/"
+            "Iak\\Key\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -62,10 +61,7 @@
         "laravel": {
             "providers": [
                 "Iak\\Key\\KeyServiceProvider"
-            ],
-            "aliases": {
-                "Key": "Iak\\Key\\Facades\\Key"
-            }
+            ]
         }
     },
     "minimum-stability": "dev",
