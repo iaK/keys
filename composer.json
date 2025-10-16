@@ -2,7 +2,6 @@
     "name": "iak/keys",
     "description": "This is my package keys",
     "keywords": [
-        "Iak",
         "laravel",
         "keys"
     ],
