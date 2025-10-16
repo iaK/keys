@@ -4,6 +4,7 @@ namespace Iak\Key\Tests;
 
 use Iak\Key\KeyServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Orchestra\Testbench\Bootstrap\HandleExceptions;
 
 class TestCase extends Orchestra
 {
@@ -19,14 +20,17 @@ class TestCase extends Orchestra
         ];
     }
 
-    public function getEnvironmentSetUp($app)
+    /**
+     * Creates the application.
+     *
+     * @return \Illuminate\Foundation\Application
+     */
+    public function createApplication()
     {
-        // config()->set('database.default', 'testing');
+        $app = parent::createApplication();
+        
+        HandleExceptions::flushState($this);
 
-        /*
-         foreach (\Illuminate\Support\Facades\File::allFiles(__DIR__ . '/../database/migrations') as $migration) {
-            (include $migration->getRealPath())->up();
-         }
-         */
+        return $app;
     }
 }
