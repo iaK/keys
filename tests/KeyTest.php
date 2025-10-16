@@ -120,7 +120,6 @@ it('handles numeric parameters', function () {
     expect(Key::cache('numeric.test', ['id' => 0, 'count' => 42]))->toBe('numeric:0:42');
 });
 
-
 // Tests for dynamic method calling
 it('supports dynamic method calling', function () {
     config()->set('keys.custom.dynamic', 'custom:{value}');
@@ -151,4 +150,3 @@ it('works with all methods using array parameters', function (string $method) {
     $result = Key::$method('test.key', ['id' => 123, 'type' => 'test']);
     expect($result)->toBe("{$method}:123:test");
 })->with('methodProvider');
-
