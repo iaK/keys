@@ -3,8 +3,8 @@
 namespace Iak\Key\Tests;
 
 use Iak\Key\KeyServiceProvider;
-use Orchestra\Testbench\TestCase as Orchestra;
 use Orchestra\Testbench\Bootstrap\HandleExceptions;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
@@ -28,7 +28,7 @@ class TestCase extends Orchestra
     public function createApplication()
     {
         $app = parent::createApplication();
-        
+
         HandleExceptions::flushState($this);
 
         return $app;
