@@ -1,6 +1,11 @@
 <?php
 
 use Iak\Key\Key;
+use Illuminate\Foundation\Bootstrap\HandleExceptions;
+
+afterEach(function () {
+    HandleExceptions::flushState($this);
+});
 
 it('handles array parameters', function () {
     config()->set('keys.cache.product.book', 'product-book:{id}');
