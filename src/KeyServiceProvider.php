@@ -4,7 +4,6 @@ namespace Iak\Key;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Iak\Key\Commands\KeyCommand;
 
 class KeyServiceProvider extends PackageServiceProvider
 {

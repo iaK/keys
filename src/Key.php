@@ -5,14 +5,13 @@ namespace Iak\Key;
 use InvalidArgumentException;
 
 class Key
-{    
+{
     /**
      * Get a formatted key from the specified section using named parameters.
      *
-     * @param string $section The config section (cache, queue, event)
-     * @param string $key Dot notation key from config
-     * @param mixed ...$parameters Named parameters to be inserted into the key format
-     * @return string
+     * @param  string  $section  The config section (cache, queue, event)
+     * @param  string  $key  Dot notation key from config
+     * @param  mixed  ...$parameters  Named parameters to be inserted into the key format
      *
      * @throws InvalidArgumentException if the key doesn't exist in config, any of the required parameters are missing, or if any extra parameters are provided.
      */
@@ -22,10 +21,10 @@ class Key
         if (empty($parameters)) {
             return static::getPositional($section, $key, $parameters);
         }
-        
+
         // Flatten the parameters array into a single level array, but save the array keys.
         $flattened = collect($parameters)
-            ->flatMap(fn($value, $key) => is_array($value) ? $value : [$key => $value])
+            ->flatMap(fn ($value, $key) => is_array($value) ? $value : [$key => $value])
             ->toArray();
 
         // Check if the parameters are numerical keys, if so, treat as positional parameters
@@ -39,10 +38,9 @@ class Key
     /**
      * Get a formatted key from the specified section using named parameters.
      *
-     * @param string $section The config section (cache, queue, event)
-     * @param string $key Dot notation key from config
-     * @param array<string,mixed> $parameters Named parameters to be inserted into the key format
-     * @return string
+     * @param  string  $section  The config section (cache, queue, event)
+     * @param  string  $key  Dot notation key from config
+     * @param  array<string,mixed>  $parameters  Named parameters to be inserted into the key format
      *
      * @throws InvalidArgumentException if the key doesn't exist in config, or if required parameters are missing
      */
@@ -61,23 +59,23 @@ class Key
         // Check for missing parameters
         $missingParams = array_diff($requiredParams, array_keys($parameters));
 
-        if (!empty($missingParams)) {
+        if (! empty($missingParams)) {
             throw new InvalidArgumentException(
-                "Key '{$section}.{$key}' is missing required parameters: " . implode(', ', $missingParams)
+                "Key '{$section}.{$key}' is missing required parameters: ".implode(', ', $missingParams)
             );
         }
 
         // Check for extra parameters
         $extraParams = array_diff(array_keys($parameters), $requiredParams);
-        if (!empty($extraParams)) {
+        if (! empty($extraParams)) {
             throw new InvalidArgumentException(
-                "Key '{$section}.{$key}' was given extra parameters: " . implode(', ', $extraParams)
+                "Key '{$section}.{$key}' was given extra parameters: ".implode(', ', $extraParams)
             );
         }
 
         return preg_replace_callback(
             '/{([^}]+)}/',
-            fn($match) => $parameters[$match[1]],
+            fn ($match) => $parameters[$match[1]],
             $format
         );
     }
@@ -85,10 +83,9 @@ class Key
     /**
      * Get a formatted key from the specified section using positional parameters.
      *
-     * @param string $section The config section (cache, queue, event)
-     * @param string $key Dot notation key from config
-     * @param array<int,mixed> $parameters Positional parameters to be inserted into the key format
-     * @return string
+     * @param  string  $section  The config section (cache, queue, event)
+     * @param  string  $key  Dot notation key from config
+     * @param  array<int,mixed>  $parameters  Positional parameters to be inserted into the key format
      *
      * @throws InvalidArgumentException if the key doesn't exist in config, or if the number of parameters doesn't match
      */
@@ -114,7 +111,7 @@ class Key
         // Replace placeholders with values in order
         return preg_replace_callback(
             '/{[^}]+}/',
-            function() use (&$parameters) {
+            function () use (&$parameters) {
                 return array_shift($parameters);
             },
             $format
@@ -124,9 +121,7 @@ class Key
     /**
      * Dynamically call the getKey method with the given name and arguments.
      *
-     * @param string $name
-     * @param array<mixed> $arguments
-     * @return string
+     * @param  array<mixed>  $arguments
      */
     public static function __callStatic(string $name, array $arguments): string
     {
@@ -168,7 +163,7 @@ class Key
         return static::getKey(__FUNCTION__, $key, ...$parameters);
     }
 
-    public static function rateLimit(string $key, mixed ...$parameters): string
+    public static function limit(string $key, mixed ...$parameters): string
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
     }
@@ -227,52 +222,52 @@ class Key
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
     }
-    
+
     public static function disk(string $key, mixed ...$parameters): string
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
     }
-    
+
     public static function policy(string $key, mixed ...$parameters): string
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
     }
-    
+
     public static function guard(string $key, mixed ...$parameters): string
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
     }
-    
+
     public static function schedule(string $key, mixed ...$parameters): string
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
     }
-    
+
     public static function tenant(string $key, mixed ...$parameters): string
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
     }
-    
+
     public static function experiment(string $key, mixed ...$parameters): string
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
     }
-    
+
     public static function test(string $key, mixed ...$parameters): string
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
     }
-    
+
     public static function mail(string $key, mixed ...$parameters): string
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
     }
-    
+
     public static function service(string $key, mixed ...$parameters): string
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
     }
-    
+
     public static function flash(string $key, mixed ...$parameters): string
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
@@ -287,7 +282,7 @@ class Key
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
     }
-    
+
     public static function raw(string $key, mixed ...$parameters): string
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
@@ -297,4 +292,4 @@ class Key
     {
         return static::getKey(__FUNCTION__, $key, ...$parameters);
     }
-} 
+}

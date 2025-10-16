@@ -1,19 +1,25 @@
-# This is my package keys
+# Laravel Keys
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/iak/keys.svg?style=flat-square)](https://packagist.org/packages/iak/keys)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/iak/keys/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/iak/keys/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/iak/keys/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/iak/keys/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/iak/keys.svg?style=flat-square)](https://packagist.org/packages/iak/keys)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+## The problem
 
-## Support us
+We use string keys all across our application. We got keys for cache, rate limiting, queued jobs, sessions, broadcast channels, container aliases and so much more.
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/keys.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/keys)
+These keys can be hard to keep track of. You also need to remember what convention you used, sometimes build up keys from several dynamic values such as id's, and it's hard to get an overview of what keys are actually in use. It's also easy for typos to sneak in, as these are just strings.
 
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
+This package solves this issue, by centralizing where your keys are defined, and give you a consistent and easy way to access them.
 
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+## Features
+
+- **Configurable Key Templates**: Define key formats in configuration files
+- **Dynamic Parameters**: Define your dynamic values in the configuration, and the key class will fill them in for you
+- **Parameter Validation**: Automatic validation of required parameters and detection of extra parameters
+- **Multiple Key Types**: Built-in support for cache, queue, event, session, and many more key types
+- **Laravel Integration**: Seamless integration with Laravel's configuration system
 
 ## Installation
 
@@ -23,38 +29,135 @@ You can install the package via composer:
 composer require iak/keys
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="keys-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
+Then publish the config file with:
 
 ```bash
 php artisan vendor:publish --tag="keys-config"
 ```
 
-This is the contents of the published config file:
+## Usage
+
+First, define your key templates in the configuration file:
 
 ```php
+// config/keys.php
 return [
+    'cache' => [
+        'product-data' => 'product:{productId},variant:{variantId}',
+    ],
+    'limit' => [
+        'password-reset' => 'password-reset:{userId}' 
+    ]
 ];
 ```
 
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="keys-views"
-```
-
-## Usage
+Then access the keys using the Key helper class.
 
 ```php
-$key = new Iak\Key();
-echo $key->echoPhrase('Hello, Iak!');
+use Iak\Key\Key;
+
+// Using named parameters
+Key::cache('product-data', productId: 123, variantId: 456);
+
+// Using array parameters
+Key::cache('product-data', [
+    'productId' => 123,
+    'variantId' => 456
+]);
+
+// Using parameter position
+Key::cache('user.action', 123, 456);
+
+// The result for all above: "product:123,variant:456"
+
 ```
+
+### Built-in Key Types
+
+The package comes with many built-in key types:
+
+```php
+// Cache keys
+Key::cache('user.profile', id: 123);
+
+// Queue keys
+Key::queue('email.notification', type: 'welcome', userId: 456);
+
+// Event keys
+Key::event('user.action', action: 'login', userId: 789);
+
+// Session keys
+Key::session('user.data', userId: 123, sessionId: 'abc123');
+
+// Job keys
+Key::job('process.data', jobType: 'import', priority: 'high');
+
+// Lock keys
+Key::lock('', version: 'v1', resource: 'users');
+```
+
+There are support for many different types of keys. 
+For example: tag, lock, channel, broadcast, limit, middleware, 
+view, translation, command, container, feature, notification, throttle,
+disk, policy, guard, schedule, tenant, experiment, test, mail, service,
+flash, alias, provider, raw, config
+
+### Dynamic Method Calling
+
+You can also use dynamic method calling for custom key types:
+
+```php
+// Define a custom key type in config
+// config/keys.php
+return [
+    'custom' => [
+        'api.request' => 'api:{endpoint}:{method}:{timestamp}',
+    ],
+];
+
+// Use it dynamically
+$key = Key::custom('api.request', 
+    endpoint: 'users',
+    method: 'GET',
+    timestamp: time()
+);
+// Result: "api:users:GET:1234567890"
+```
+
+### Error Handling
+
+The package validates parameters and provides helpful error messages:
+
+```php
+// Missing required parameter
+Key::cache('user.profile'); 
+// Throws: Missing required parameters: id
+
+// Extra parameter not in template
+Key::cache('user.profile', id: 123, extra: 'value'); // Throws: Extra parameters: extra
+
+// Non-existent key
+Key::cache('nonexistent.key', id: 123); // Throws: Key not found in config
+```
+
+## Configuration
+
+### Key Template Format
+
+Key templates use curly braces `{}` to define parameter placeholders:
+
+```php
+'user.profile' => 'user:profile:{id}',
+'product.details' => 'product:{category}:{id}:{variant}',
+'api.request' => 'api:{version}:{endpoint}:{method}',
+```
+
+### Parameter Rules
+
+- All parameters defined in the template must be provided
+- Extra parameters not defined in the template will cause an exception
+- The same parameter can be used multiple times in a template
+- Parameters can be strings, numbers, or any scalar value
 
 ## Testing
 
