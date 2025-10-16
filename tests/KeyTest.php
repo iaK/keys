@@ -2,15 +2,6 @@
 
 use Iak\Key\Key;
 
-// Data provider for all methods
-dataset('methodProvider', [
-    'cache', 'queue', 'event', 'tag', 'lock', 'channel', 'broadcast', 'limit',
-    'session', 'job', 'middleware', 'route', 'view', 'translation', 'command',
-    'container', 'feature', 'notification', 'throttle', 'disk', 'policy', 'guard',
-    'schedule', 'tenant', 'experiment', 'test', 'mail', 'service', 'flash',
-    'alias', 'provider', 'raw', 'config',
-]);
-
 it('handles array parameters', function () {
     config()->set('keys.cache.product.book', 'product-book:{id}');
 
@@ -133,7 +124,7 @@ it('works with all methods using named parameters', function (string $method) {
 
     $result = Key::$method('test.key', ['id' => 123, 'type' => 'test']);
     expect($result)->toBe("{$method}:123:test");
-})->with('methodProvider');
+})->with('helperMethods');
 
 // Data provider tests for all methods with positional parameters
 it('works with all methods using positional parameters', function (string $method) {
@@ -141,7 +132,7 @@ it('works with all methods using positional parameters', function (string $metho
 
     $result = Key::$method('test.key', 123, 'test');
     expect($result)->toBe("{$method}:123:test");
-})->with('methodProvider');
+})->with('helperMethods');
 
 // Data provider tests for all methods with array parameters
 it('works with all methods using array parameters', function (string $method) {
@@ -149,4 +140,13 @@ it('works with all methods using array parameters', function (string $method) {
 
     $result = Key::$method('test.key', ['id' => 123, 'type' => 'test']);
     expect($result)->toBe("{$method}:123:test");
-})->with('methodProvider');
+})->with('helperMethods');
+
+// Data provider for all methods
+dataset('helperMethods', [
+    'cache', 'queue', 'event', 'tag', 'lock', 'channel', 'broadcast', 'limit',
+    'session', 'job', 'middleware', 'route', 'view', 'translation', 'command',
+    'container', 'feature', 'notification', 'throttle', 'disk', 'policy', 'guard',
+    'schedule', 'tenant', 'experiment', 'test', 'mail', 'service', 'flash',
+    'alias', 'provider', 'raw', 'config',
+]);
