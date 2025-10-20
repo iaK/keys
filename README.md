@@ -1,4 +1,4 @@
-# Laravel Keys
+# Laravel Keys 🔑
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/iak/keys.svg?style=flat-square)](https://packagist.org/packages/iak/keys)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/iak/keys/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/iak/keys/actions?query=workflow%3Arun-tests+branch%3Amain)
@@ -168,6 +168,7 @@ composer test
 ## Credits
 
 - [Isak Berglind](https://github.com/iaK)
+- [Erik Bäck](https://github.com/erback)
 - [All Contributors](../../contributors)
 
 ## License
